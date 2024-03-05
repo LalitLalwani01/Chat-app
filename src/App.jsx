@@ -1,20 +1,57 @@
-import React from "react";
+import React, { useState } from "react";
 import {StreamChat} from 'stream-chat'
-import {Chat} from 'stream-chat-react';
-import ChannelContainer from "./components/channelContainer";
-import {ChannelListContainer} from './components/index'
+import {Avatar, Chat} from 'stream-chat-react';
+import {ChannelListContainer,ChannelContainer,Auth} from './components/index'
+import  Cookies  from "universal-cookie";
+const cookies =new Cookies;
+const authToken = cookies.get('token');
+import "stream-chat-react/dist/css/index.css"
+import "./App.css"
+let apiKey = import.meta.env.VITE_API_KEY;
+
+const clients =StreamChat.getInstance(apiKey)
 
 function App() {
- let apiKey = import.meta.env.VITE_API_KEY;
+  const [createType, setCreateType]= useState('');
+  const [isCreating, setIsCreating] =useState(false);
+  const [isEditing, setIsEditing] =useState(false);
+ 
+  if(authToken){
+    clients.connectUser({
+      id:cookies.get('userId'),
+      name:cookies.get('userName'),
+      fullName:cookies.get('fullName'),
+      image:cookies.get('avatarUrl'),
+      hashedPassword:cookies.get('hashedPassword'),
+      phoneNumber:cookies.get('phoneNumber')
+    },authToken)
+  }
  console.log("apiKey", apiKey)
+ 
+   console.log(clients)
 
-   const clients =StreamChat.getInstance(apiKey)
+   if(!authToken) return <Auth/>
+
   return (
     
       <div>
-       <Chat client={clients}></Chat>
-       <ChannelContainer/>
-       <ChannelListContainer/>
+       <Chat client={clients}>
+       <ChannelContainer 
+       isCreating= {isCreating}
+       setIsCreating ={setIsCreating}
+       setCreateType ={setCreateType}
+       setIsEditing ={setIsEditing}
+       />
+       <ChannelListContainer
+       isCreating= {isCreating}
+       setIsCreating ={setIsCreating}
+       isEditing={isEditing}
+       setIsEditing ={setIsEditing}
+       createType ={createType}
+
+       />
+       
+       </Chat>
       </div>
     
   
