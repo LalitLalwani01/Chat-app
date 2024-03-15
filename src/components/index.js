@@ -11,4 +11,5 @@ export {default as EditChannel} from './EditChannel';
 export {default as ChannelInner} from './ChannelInner'
 export {default as TeamMessage} from './TeamMessage'
 export {default as UserList} from './UserList';
+export {default as ResultDropdown} from './ResultDropdown';
 
